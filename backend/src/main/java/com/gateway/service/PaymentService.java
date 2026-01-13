@@ -44,6 +44,7 @@ public class PaymentService {
         payment.setStatus("pending");
         payment.setCreatedAt(now);
         paymentRepository.save(payment);
+        paymentRepository.flush();
 
         webhookService.enqueueWebhook(merchant, "payment.created", buildPaymentPayload(payment));
         webhookService.enqueueWebhook(merchant, "payment.pending", buildPaymentPayload(payment));
