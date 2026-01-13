@@ -416,11 +416,11 @@ app.post('/webhook', (req, res) => {
     .digest('hex');
   
   if (signature !== expectedSignature) {
-    console.log('❌ Invalid signature');
+    console.log('[invalid] Webhook signature mismatch');
     return res.status(401).send('Invalid signature');
   }
   
-  console.log('✅ Webhook verified:', req.body.event);
+  console.log('[ok] Webhook verified:', req.body.event);
   console.log('Payment ID:', req.body.data.payment.id);
   
   res.status(200).send('OK');
@@ -435,7 +435,7 @@ Run the test receiver and configure webhook URL to:
 - **Mac/Windows**: `http://host.docker.internal:4000/webhook`
 - **Linux**: `http://172.17.0.1:4000/webhook`
 
-## 📊 Database Schema
+## Database Schema
 
 ### Merchants Table
 
@@ -508,7 +508,7 @@ Run the test receiver and configure webhook URL to:
 | `created_at` | TIMESTAMPTZ | Creation timestamp |
 | `expires_at` | TIMESTAMPTZ | Expiration timestamp (24 hours) |
 
-## 🔧 Configuration
+## Configuration
 
 ### Environment Variables
 
@@ -532,7 +532,7 @@ WEBHOOK_RETRY_INTERVALS_TEST=false
 SPRING_PROFILES_ACTIVE=worker  # For worker service only
 ```
 
-## 🐳 Docker Services
+## Docker Services
 
 | Service | Container | Port | Description |
 |---------|-----------|------|-------------|
@@ -543,7 +543,7 @@ SPRING_PROFILES_ACTIVE=worker  # For worker service only
 | Checkout | `gateway_checkout` | 3001 | Embeddable SDK server |
 | Dashboard | `gateway_dashboard` | 3000 | React admin dashboard |
 
-## 🎯 Design Patterns
+## Design Patterns
 
 - **Repository Pattern** - Data access abstraction with JPA repositories
 - **Service Layer** - Business logic separation from controllers
@@ -553,7 +553,7 @@ SPRING_PROFILES_ACTIVE=worker  # For worker service only
 - **Retry with Exponential Backoff** - Resilient webhook delivery
 - **HMAC Signature Verification** - Secure webhook authentication
 
-## 🔒 Security Considerations
+## Security Considerations
 
 - **API Authentication** - Key/secret pair validation on every request
 - **Webhook Signatures** - HMAC-SHA256 to prevent tampering
@@ -562,7 +562,7 @@ SPRING_PROFILES_ACTIVE=worker  # For worker service only
 - **SQL Injection Prevention** - Parameterized queries via JPA
 - **CORS** - Configure allowed origins for production deployment
 
-## 📈 Monitoring
+## Monitoring
 
 ### Health Check
 

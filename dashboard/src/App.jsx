@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 function Nav({ active, setActive }) {
   return (
@@ -12,6 +12,27 @@ function Nav({ active, setActive }) {
     </nav>
   );
 }
+const RefreshIcon = ({ size = 16 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M4 4v6h6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M20 20v-6h-6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M5 14a7 7 0 0 0 12.9 2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M19 10A7 7 0 0 0 6.1 8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const SunIcon = ({ size = 18 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12" cy="12" r="5" stroke="currentColor" strokeWidth="1.6" />
+    <path d="M12 3v2M12 19v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M3 12h2M19 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+  </svg>
+);
+
+const MoonIcon = ({ size = 18 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21 12.79A9 9 0 0 1 11.21 3 7 7 0 1 0 21 12.79Z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
 
 function WebhookConfig() {
   const [url, setUrl] = useState('http://localhost:4000/webhook');
@@ -110,16 +131,18 @@ function WebhookConfig() {
         </div>
       </form>
 
-      <h3>Webhook Logs 
-        <button onClick={fetchLogs} style={{marginLeft: '10px', fontSize: '14px'}} className="ghost">
-          🔄 Refresh
+      <h3 className="section-heading">
+        Webhook Logs 
+        <button onClick={fetchLogs} className="ghost inline-btn" aria-label="Refresh webhook logs">
+          <RefreshIcon size={14} />
+          <span>Refresh</span>
         </button>
       </h3>
-      
+
       {loading && <p>Loading webhook logs...</p>}
-      {error && <p style={{color: 'red'}}>Error: {error}. Make sure backend is running on port 8000.</p>}
+      {error && <p className="error-text">Error: {error}. Make sure backend is running on port 8000.</p>}
       {!loading && !error && logs.length === 0 && (
-        <p style={{color: '#888'}}>No webhook logs yet. Make a payment on <a href="http://localhost:3001/demo.html" target="_blank">demo page</a> to see logs here.</p>
+        <p className="muted">No webhook logs yet. Make a payment on <a href="http://localhost:3001/demo.html" target="_blank" rel="noreferrer">demo page</a> to see logs here.</p>
       )}
       
       {logs.length > 0 && (
@@ -139,9 +162,7 @@ function WebhookConfig() {
               <tr key={log.id} data-test-id="webhook-log-item" data-webhook-id={log.id}>
                 <td data-test-id="webhook-event">{log.event}</td>
                 <td data-test-id="webhook-status">
-                  <span style={{
-                    color: log.status === 'success' ? 'green' : log.status === 'failed' ? 'red' : 'orange'
-                  }}>
+                  <span className={`status-chip ${log.status}`}>
                     {log.status}
                   </span>
                 </td>
@@ -222,6 +243,24 @@ function verifyWebhook(payload, signature, secret) {
 
 export default function App() {
   const [active, setActive] = useState('webhooks');
+  const [theme, setTheme] = useState('dark');
+
+  useEffect(() => {
+    const saved = localStorage.getItem('pg-theme');
+    if (saved) {
+      setTheme(saved);
+      document.documentElement.setAttribute('data-theme', saved);
+    }
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('pg-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((t) => (t === 'dark' ? 'light' : 'dark'));
+  };
 
   return (
     <div className="shell">
@@ -231,7 +270,13 @@ export default function App() {
           <h1>Async jobs, webhooks, and SDK hub</h1>
           <p className="muted">Configure webhooks, monitor deliveries, and grab integration snippets in one place.</p>
         </div>
-        <div className="pill">Sandbox</div>
+        <div className="hero-actions">
+          <div className="pill">Sandbox</div>
+          <button className="ghost theme-toggle" onClick={toggleTheme} aria-label="Toggle theme">
+            {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+            <span>{theme === 'dark' ? 'Light' : 'Dark'} mode</span>
+          </button>
+        </div>
       </header>
       <Nav active={active} setActive={setActive} />
       {active === 'webhooks' ? <WebhookConfig /> : <ApiDocs />}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import CheckoutForm from './CheckoutForm';
+import './styles.css';
 
 function getParam(name) {
   const params = new URLSearchParams(window.location.search);
@@ -9,6 +10,8 @@ function getParam(name) {
 
 const container = document.getElementById('root');
 if (container) {
+  const initialTheme = getParam('theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', initialTheme);
   const root = createRoot(container);
   root.render(
     <CheckoutForm 

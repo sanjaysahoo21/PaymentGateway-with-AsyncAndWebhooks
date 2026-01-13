@@ -70,16 +70,18 @@ export default function CheckoutForm({ orderId, apiKey }) {
           required
         />
         {error && (
-          <div style={{ color: '#f56565', fontSize: '14px', marginTop: '8px' }}>
+          <div className="error">
             {error}
           </div>
         )}
-        <button data-test-id="iframe-pay" type="submit" disabled={loading}>
-          {loading ? 'Processing payment...' : 'Pay ₹500.00'}
-        </button>
-        <button type="button" data-test-id="iframe-cancel" onClick={() => sendMessageToParent('close_modal', {})}>
-          Cancel
-        </button>
+        <div className="actions">
+          <button data-test-id="iframe-pay" type="submit" disabled={loading}>
+            {loading ? 'Processing payment...' : 'Pay ₹500.00'}
+          </button>
+          <button type="button" className="ghost" data-test-id="iframe-cancel" onClick={() => sendMessageToParent('close_modal', {})}>
+            Cancel
+          </button>
+        </div>
       </form>
     </div>
   );

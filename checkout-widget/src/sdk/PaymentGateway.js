@@ -9,6 +9,7 @@ class PaymentGateway {
     this.onFailure = options.onFailure || (() => {});
     this.onClose = options.onClose || (() => {});
     this.host = options.host || 'http://localhost:3001';
+    this.theme = options.theme || this._detectTheme();
     if (!this.key || !this.orderId) {
       throw new Error('PaymentGateway: key and orderId are required');
     }
@@ -17,8 +18,8 @@ class PaymentGateway {
   }
 
   open() {
-    const iframeUrl = `${this.host}/checkout?order_id=${encodeURIComponent(this.orderId)}&embedded=true&key=${encodeURIComponent(this.key)}`;
-    this.modal = createModal(iframeUrl, () => this.close());
+    const iframeUrl = `${this.host}/checkout?order_id=${encodeURIComponent(this.orderId)}&embedded=true&key=${encodeURIComponent(this.key)}&theme=${encodeURIComponent(this.theme)}`;
+    this.modal = createModal(iframeUrl, () => this.close(), this.theme);
     this.modal.open();
     window.addEventListener('message', this._messageHandler);
   }
@@ -43,6 +44,15 @@ class PaymentGateway {
     } else if (data.type === 'close_modal') {
       this.close();
     }
+  }
+
+  _detectTheme() {
+    const attr = document.documentElement.getAttribute('data-theme');
+    if (attr === 'light' || attr === 'dark') return attr;
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+    return 'light';
   }
 }
 

@@ -20,13 +20,13 @@ app.post('/webhook', (req, res) => {
     .digest('hex');
 
   if (signature !== expectedSignature) {
-    console.log('❌ Invalid signature');
+    console.log('[invalid] Webhook signature mismatch');
     console.log('Expected:', expectedSignature);
     console.log('Received:', signature);
     return res.status(401).send('Invalid signature');
   }
 
-  console.log('✅ Webhook verified:', req.body.event);
+  console.log('[ok] Webhook verified:', req.body.event);
   console.log('Timestamp:', new Date(req.body.timestamp * 1000).toISOString());
   
   if (req.body.data.payment) {
@@ -45,7 +45,7 @@ app.post('/webhook', (req, res) => {
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
-  console.log(`\n🎯 Test merchant webhook receiver running on port ${PORT}`);
+  console.log(`\nTest merchant webhook receiver running on port ${PORT}`);
   console.log(`Webhook URL: http://localhost:${PORT}/webhook`);
   console.log(`Secret: ${SECRET}\n`);
 });

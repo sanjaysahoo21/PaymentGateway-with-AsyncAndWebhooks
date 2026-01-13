@@ -1,8 +1,9 @@
-export function createModal(iframeSrc, onClose) {
+export function createModal(iframeSrc, onClose, theme = 'light') {
   const overlay = document.createElement('div');
   overlay.id = 'payment-gateway-modal';
   overlay.setAttribute('data-test-id', 'payment-modal');
   overlay.className = 'pg-overlay';
+  overlay.setAttribute('data-theme', theme);
 
   const inner = document.createElement('div');
   inner.className = 'pg-modal-content';
