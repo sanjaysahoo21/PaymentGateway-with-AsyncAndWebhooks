@@ -2,7 +2,6 @@ const express = require('express');
 const crypto = require('crypto');
 
 const app = express();
-// capture raw body so HMAC matches the exact bytes sent by the gateway
 app.use(express.json({
   verify: (req, _res, buf) => {
     req.rawBody = buf;
@@ -15,7 +14,6 @@ app.post('/webhook', (req, res) => {
   const signature = req.headers['x-webhook-signature'];
   const payloadBuffer = req.rawBody || Buffer.from(JSON.stringify(req.body));
 
-  // Verify signature against raw bytes
   const expectedSignature = crypto
     .createHmac('sha256', SECRET)
     .update(payloadBuffer)

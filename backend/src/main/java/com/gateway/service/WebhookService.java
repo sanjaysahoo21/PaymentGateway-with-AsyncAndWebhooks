@@ -34,7 +34,7 @@ public class WebhookService {
     @Transactional
     public void enqueueWebhook(Merchant merchant, String event, Map<String, Object> payload) {
         if (merchant.getWebhookUrl() == null || merchant.getWebhookUrl().isBlank()) {
-            return; // skip delivery if no URL configured
+            return;
         }
         try {
             WebhookLog log = new WebhookLog();

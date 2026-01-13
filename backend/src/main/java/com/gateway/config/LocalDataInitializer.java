@@ -19,7 +19,6 @@ public class LocalDataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Create test merchant if it doesn't exist
         if (merchantRepository.findByApiKeyAndApiSecret("key_test_abc123", "secret_test_xyz789").isEmpty()) {
             Merchant testMerchant = new Merchant();
             testMerchant.setId(UUID.randomUUID());
