@@ -1,0 +1,31 @@
+# Automated evaluation configuration for Payment Gateway with Async and Webhooks
+# Notes:
+# - Worker services (PaymentWorker, WebhookWorker, RefundWorker) run inside the API container via app.worker.enabled=true
+# - Redis and Postgres start via docker-compose
+# - Health and job metrics endpoints are exposed via the API
+
+setup:
+  - docker --version
+  - docker-compose --version
+
+start:
+  - docker-compose up -d
+
+verify:
+  # API health
+  - curl -s http://localhost:8000/actuator/health
+  # Job queue metrics
+  - curl -s http://localhost:8000/api/v1/test/jobs/status
+  # Dashboard reachable
+  - curl -s http://localhost:3000
+  # Checkout demo reachable
+  - curl -s http://localhost:3001
+  # Redis reachable
+  - (echo PING | nc -w 2 localhost 6379) || echo "skip nc"
+
+# If tests exist, add commands here; currently none.
+test:
+  - echo "No test suite provided"
+
+shutdown:
+  - docker-compose down -v
