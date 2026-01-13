@@ -5,8 +5,8 @@ VALUES (
     'test@example.com',
     'key_test_abc123',
     'secret_test_xyz789',
-    'http://localhost:4000/webhook',
+    'http://gateway_test_merchant:4000/webhook',
     'whsec_test_abc123',
     NOW()
 )
-ON CONFLICT (email) DO UPDATE SET webhook_secret = 'whsec_test_abc123';
+ON CONFLICT (email) DO UPDATE SET webhook_url = 'http://gateway_test_merchant:4000/webhook', webhook_secret = 'whsec_test_abc123';
